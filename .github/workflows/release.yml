@@ -24,14 +24,16 @@ jobs:
         run: swift test
 
       - name: Build DMG
-        run: ./scripts/make-release-dmg.sh
+        env:
+          MARKDOWNSTUDIO_VERSION: ${{ github.ref_name }}
+          MARKDOWNSTUDIO_BUILD: ${{ github.run_number }}
+        run: |
+          export MARKDOWNSTUDIO_VERSION="${MARKDOWNSTUDIO_VERSION#v}"
+          ./scripts/make-release-dmg.sh
 
       - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ github.ref_name }}
-        run: |
-          gh release create "$TAG_NAME" \
-            ".build/dist/MarkdownStudio.dmg" \
-            --title "MarkdownStudio $TAG_NAME" \
-            --notes "Download MarkdownStudio.dmg, open it, and drag MarkdownStudio.app to Applications."
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MarkdownStudio ${{ github.ref_name }}
+          body: Download MarkdownStudio.dmg, open it, and drag MarkdownStudio.app to Applications.
+          files: .build/dist/MarkdownStudio.dmg

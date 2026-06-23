@@ -8,6 +8,8 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 FRAMEWORKS_DIR="$CONTENTS_DIR/Frameworks"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 EXECUTABLE="$ROOT_DIR/.build/release/MarkdownStudio"
+APP_VERSION="${MARKDOWNSTUDIO_VERSION:-0.1.0}"
+APP_BUILD="${MARKDOWNSTUDIO_BUILD:-1}"
 
 if [[ ! -x "$EXECUTABLE" ]]; then
   EXECUTABLE="$ROOT_DIR/.build/debug/MarkdownStudio"
@@ -32,7 +34,7 @@ xcrun swift-stdlib-tool \
   --unsigned-destination "$FRAMEWORKS_DIR" \
   >/dev/null
 
-cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
+cat > "$CONTENTS_DIR/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -51,9 +53,9 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.1.0</string>
+  <string>${APP_VERSION}</string>
   <key>CFBundleVersion</key>
-  <string>1</string>
+  <string>${APP_BUILD}</string>
   <key>LSMinimumSystemVersion</key>
   <string>14.0</string>
   <key>NSHighResolutionCapable</key>
