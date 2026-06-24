@@ -23,4 +23,24 @@ final class DocumentWindowDelegate: NSObject, NSWindowDelegate {
         registry.unregister(model: model)
         onClose()
     }
+
+    func windowDidBecomeKey(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else { return }
+        if let textView = Self.findTextView(in: window.contentView) {
+            EditorRegistry.shared.activate(textView)
+        }
+    }
+
+    private static func findTextView(in view: NSView?) -> NSTextView? {
+        guard let view else { return nil }
+        if let textView = view as? NSTextView {
+            return textView
+        }
+        for subview in view.subviews {
+            if let found = findTextView(in: subview) {
+                return found
+            }
+        }
+        return nil
+    }
 }
