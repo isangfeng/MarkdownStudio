@@ -5,6 +5,7 @@ public enum MarkdownFormatStyle: Equatable {
     case italic
     case inlineCode
     case heading(Int)
+    case paragraph
     case bulletList
     case numberedList
     case blockquote
@@ -31,6 +32,8 @@ public enum MarkdownFormatting {
             wrap(text, selection: selection, prefix: "`", suffix: "`", placeholder: "code")
         case .heading(let level):
             applyLinePrefix(text, selection: selection, prefix: String(repeating: "#", count: max(1, min(level, 6))) + " ")
+        case .paragraph:
+            applyLinePrefix(text, selection: selection, prefix: "")
         case .bulletList:
             applyLinePrefix(text, selection: selection, prefix: "- ")
         case .numberedList:

@@ -13,15 +13,6 @@ struct EditorPane: View {
                 set: { model.updateText($0) }
             ))
         }
-        .overlay(alignment: .topTrailing) {
-            if model.isDirty {
-                Text("Edited")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-            }
-        }
-        .navigationTitle(model.displayName)
+        .navigationTitle(model.tabTitle)
     }
 }

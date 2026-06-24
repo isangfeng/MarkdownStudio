@@ -54,12 +54,21 @@ final class SingleDocumentModel: ObservableObject {
         return registry?.displayName(for: url) ?? url.lastPathComponent
     }
 
+    var tabTitle: String {
+        isDirty ? "\(displayName) - Edited" : displayName
+    }
+
+    var tabPillTitle: String {
+        isDirty ? "* \(displayName)" : displayName
+    }
+
     var outlineItems: [MarkdownOutlineItem] {
         MarkdownOutline.parse(text)
     }
 
     func refreshWindowMetadata() {
-        window?.title = displayName
+        window?.title = tabTitle
+        window?.tab.title = tabPillTitle
         window?.representedURL = fileURL
         window?.isDocumentEdited = isDirty
     }

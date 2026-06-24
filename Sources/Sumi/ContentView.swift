@@ -46,7 +46,19 @@ struct ContentView: View {
                 MarkdownToolbarButton(title: "Bold", systemImage: "bold", style: .bold)
                 MarkdownToolbarButton(title: "Italic", systemImage: "italic", style: .italic)
                 MarkdownToolbarButton(title: "Code", systemImage: "curlybraces", style: .inlineCode)
-                MarkdownToolbarButton(title: "Heading", systemImage: "textformat.size", style: .heading(2))
+                Menu {
+                    Button("Heading 1") { EditorRegistry.shared.apply(.heading(1)) }
+                    Button("Heading 2") { EditorRegistry.shared.apply(.heading(2)) }
+                    Button("Heading 3") { EditorRegistry.shared.apply(.heading(3)) }
+                    Button("Heading 4") { EditorRegistry.shared.apply(.heading(4)) }
+                    Button("Heading 5") { EditorRegistry.shared.apply(.heading(5)) }
+                    Button("Heading 6") { EditorRegistry.shared.apply(.heading(6)) }
+                    Divider()
+                    Button("Paragraph") { EditorRegistry.shared.apply(.paragraph) }
+                } label: {
+                    Label("Heading", systemImage: "textformat.size")
+                }
+                .help("Heading")
                 MarkdownToolbarButton(title: "List", systemImage: "list.bullet", style: .bulletList)
             }
 
