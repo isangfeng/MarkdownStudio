@@ -35,6 +35,9 @@ The generated installer-style package is:
 .build/dist/MarkdownStudio.dmg
 ```
 
+Release DMGs contain a universal app binary for both Intel (`x86_64`) and Apple
+Silicon (`arm64`) Macs.
+
 The bundle script ad-hoc signs local builds by default so the app bundle is
 internally valid. For GitHub Releases that should open normally after download,
 configure Apple Developer ID signing and notarization secrets in the repository:
