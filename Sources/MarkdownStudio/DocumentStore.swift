@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import Foundation
+import MarkdownStudioCore
 import UniformTypeIdentifiers
 
 private extension UTType {
@@ -37,6 +38,22 @@ final class DocumentStore: ObservableObject {
             return fileURL.lastPathComponent
         }
         return "Untitled.md"
+    }
+
+    var currentDocumentDisplayName: String {
+        displayName(for: fileURL, visibleURLs: visibleDocumentURLs)
+    }
+
+    var visibleRecentDocuments: [URL] {
+        recentDocuments.filter { $0 != fileURL }
+    }
+
+    var outlineItems: [MarkdownOutlineItem] {
+        MarkdownOutline.parse(text)
+    }
+
+    func recentDocumentDisplayName(for url: URL) -> String {
+        displayName(for: url, visibleURLs: visibleDocumentURLs)
     }
 
     func newDocument() {
@@ -114,6 +131,23 @@ final class DocumentStore: ObservableObject {
         recentDocuments.insert(url, at: 0)
         recentDocuments = Array(recentDocuments.prefix(10))
         UserDefaults.standard.set(recentDocuments.map(\.path), forKey: recentKey)
+    }
+
+    private var visibleDocumentURLs: [URL] {
+        ([fileURL].compactMap { $0 } + visibleRecentDocuments)
+    }
+
+    private func displayName(for url: URL?, visibleURLs: [URL]) -> String {
+        guard let url else {
+            return "Untitled.md"
+        }
+
+        let matchingNameCount = visibleURLs.filter { $0.lastPathComponent == url.lastPathComponent }.count
+        if matchingNameCount > 1 {
+            return url.path
+        }
+
+        return url.lastPathComponent
     }
 
     private func shouldContinueAfterUnsavedChanges() -> Bool {

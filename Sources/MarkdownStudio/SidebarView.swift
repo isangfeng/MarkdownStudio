@@ -1,4 +1,5 @@
 import SwiftUI
+import MarkdownStudioCore
 
 struct SidebarView: View {
     @EnvironmentObject private var store: DocumentStore
@@ -13,16 +14,30 @@ struct SidebarView: View {
             }
         )) {
             Section("Current") {
-                Label(store.displayName, systemImage: store.isDirty ? "doc.badge.ellipsis" : "doc.text")
+                Label(store.currentDocumentDisplayName, systemImage: store.isDirty ? "doc.badge.ellipsis" : "doc.text")
+                    .lineLimit(2)
                     .tag(store.fileURL)
+                    .help(store.fileURL?.path ?? store.displayName)
             }
 
-            if !store.recentDocuments.isEmpty {
-                Section("Recent") {
-                    ForEach(store.recentDocuments, id: \.self) { url in
-                        Label(url.deletingPathExtension().lastPathComponent, systemImage: "doc.text")
-                            .tag(Optional(url))
-                            .help(url.path)
+            Section("Recent") {
+                if store.visibleRecentDocuments.isEmpty {
+                    Text("No recent files")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(store.visibleRecentDocuments, id: \.self) { url in
+                        recentDocumentRow(url)
+                    }
+                }
+            }
+
+            Section("Outline") {
+                if store.outlineItems.isEmpty {
+                    Text("No headings")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(store.outlineItems) { item in
+                        outlineRow(item)
                     }
                 }
             }
@@ -51,5 +66,26 @@ struct SidebarView: View {
             .padding(.vertical, 8)
             .background(.bar)
         }
+    }
+
+    private func recentDocumentRow(_ url: URL) -> some View {
+        Label(store.recentDocumentDisplayName(for: url), systemImage: "doc.text")
+            .lineLimit(2)
+            .tag(Optional(url))
+            .help(url.path)
+    }
+
+    private func outlineRow(_ item: MarkdownOutlineItem) -> some View {
+        HStack(spacing: 6) {
+            Text("H\(item.level)")
+                .font(.caption2.monospacedDigit())
+                .foregroundStyle(.secondary)
+                .frame(width: 24, alignment: .leading)
+
+            Text(item.title)
+                .lineLimit(1)
+        }
+        .padding(.leading, CGFloat(max(0, item.level - 1)) * 10)
+        .help("Line \(item.lineNumber)")
     }
 }
