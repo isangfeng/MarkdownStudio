@@ -5,19 +5,11 @@ struct SidebarView: View {
     @EnvironmentObject private var store: DocumentStore
 
     var body: some View {
-        List(selection: Binding(
-            get: { store.fileURL },
-            set: { url in
-                if let url {
-                    store.loadRecentDocument(url)
-                }
-            }
-        )) {
+        List {
             Section("Current") {
-                Label(store.currentDocumentDisplayName, systemImage: store.isDirty ? "doc.badge.ellipsis" : "doc.text")
-                    .lineLimit(2)
-                    .tag(store.fileURL)
-                    .help(store.fileURL?.path ?? store.displayName)
+                ForEach(store.openDocuments) { document in
+                    currentDocumentRow(document)
+                }
             }
 
             Section("Recent") {
@@ -68,11 +60,39 @@ struct SidebarView: View {
         }
     }
 
+    private func currentDocumentRow(_ document: OpenDocument) -> some View {
+        Button {
+            store.selectDocument(document.id)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: document.isDirty ? "doc.badge.ellipsis" : "doc.text")
+                    .foregroundStyle(document.id == store.activeDocumentID ? .primary : .secondary)
+
+                Text(store.displayName(for: document))
+                    .lineLimit(2)
+
+                if document.isDirty {
+                    Text("●")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 0)
+            }
+        }
+        .buttonStyle(.plain)
+        .help(document.fileURL?.path ?? store.displayName(for: document))
+    }
+
     private func recentDocumentRow(_ url: URL) -> some View {
-        Label(store.recentDocumentDisplayName(for: url), systemImage: "doc.text")
-            .lineLimit(2)
-            .tag(Optional(url))
-            .help(url.path)
+        Button {
+            store.loadRecentDocument(url)
+        } label: {
+            Label(store.recentDocumentDisplayName(for: url), systemImage: "doc.text")
+                .lineLimit(2)
+        }
+        .buttonStyle(.plain)
+        .help(url.path)
     }
 
     private func outlineRow(_ item: MarkdownOutlineItem) -> some View {

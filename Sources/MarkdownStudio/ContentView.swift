@@ -31,7 +31,7 @@ struct ContentView: View {
                 } label: {
                     Label("Save", systemImage: "square.and.arrow.down")
                 }
-                .disabled(!store.isDirty && store.fileURL != nil)
+                .disabled(!store.activeIsDirty && store.activeFileURL != nil)
             }
 
             ToolbarItemGroup {

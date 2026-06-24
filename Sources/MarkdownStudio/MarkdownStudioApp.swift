@@ -1,13 +1,26 @@
 import SwiftUI
 
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    weak var store: DocumentStore?
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        store?.shouldTerminateApplication() == false ? .terminateCancel : .terminateNow
+    }
+}
+
 @main
 struct MarkdownStudioApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = DocumentStore()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(store)
+                .onAppear {
+                    appDelegate.store = store
+                }
                 .frame(minWidth: 880, minHeight: 620)
         }
         .windowStyle(.titleBar)
@@ -22,6 +35,11 @@ struct MarkdownStudioApp: App {
                     store.openDocument()
                 }
                 .keyboardShortcut("o", modifiers: .command)
+
+                Button("Close Document") {
+                    store.closeDocument(store.activeDocumentID)
+                }
+                .keyboardShortcut("w", modifiers: .command)
             }
 
             CommandGroup(after: .saveItem) {
