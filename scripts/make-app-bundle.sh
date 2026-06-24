@@ -8,6 +8,7 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 FRAMEWORKS_DIR="$CONTENTS_DIR/Frameworks"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 EXECUTABLE="${MARKDOWNSTUDIO_EXECUTABLE:-$ROOT_DIR/.build/release/MarkdownStudio}"
+APP_ICON="$ROOT_DIR/Sources/MarkdownStudio/Resources/AppIcon.icns"
 APP_VERSION="${MARKDOWNSTUDIO_VERSION:-0.1.0}"
 APP_BUILD="${MARKDOWNSTUDIO_BUILD:-1}"
 CODE_SIGN_IDENTITY="${MARKDOWNSTUDIO_CODE_SIGN_IDENTITY:--}"
@@ -25,6 +26,7 @@ fi
 rm -rf "$APP_DIR"
 mkdir -p "$MACOS_DIR" "$FRAMEWORKS_DIR" "$RESOURCES_DIR"
 cp "$EXECUTABLE" "$MACOS_DIR/MarkdownStudio"
+cp "$APP_ICON" "$RESOURCES_DIR/AppIcon.icns"
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$MACOS_DIR/MarkdownStudio" 2>/dev/null || true
 install_name_tool -delete_rpath "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-6.2/macosx" "$MACOS_DIR/MarkdownStudio" 2>/dev/null || true
 
@@ -47,6 +49,8 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST
   <string>MarkdownStudio</string>
   <key>CFBundleIdentifier</key>
   <string>local.markdownstudio.app</string>
+  <key>CFBundleIconFile</key>
+  <string>AppIcon</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>

@@ -14,7 +14,8 @@ let package = Package(
         .target(name: "MarkdownStudioCore"),
         .executableTarget(
             name: "MarkdownStudio",
-            dependencies: ["MarkdownStudioCore"]
+            dependencies: ["MarkdownStudioCore"],
+            resources: [.copy("Resources")]
         ),
         .testTarget(
             name: "MarkdownStudioCoreTests",
