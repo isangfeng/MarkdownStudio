@@ -10,6 +10,7 @@ RESOURCES_DIR="$CONTENTS_DIR/Resources"
 EXECUTABLE="$ROOT_DIR/.build/release/MarkdownStudio"
 APP_VERSION="${MARKDOWNSTUDIO_VERSION:-0.1.0}"
 APP_BUILD="${MARKDOWNSTUDIO_BUILD:-1}"
+CODE_SIGN_IDENTITY="${MARKDOWNSTUDIO_CODE_SIGN_IDENTITY:--}"
 
 if [[ ! -x "$EXECUTABLE" ]]; then
   EXECUTABLE="$ROOT_DIR/.build/debug/MarkdownStudio"
@@ -67,5 +68,20 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST
 </dict>
 </plist>
 PLIST
+
+if [[ "$CODE_SIGN_IDENTITY" != "skip" ]]; then
+  CODESIGN_ARGS=(--force --sign "$CODE_SIGN_IDENTITY")
+  if [[ "$CODE_SIGN_IDENTITY" == "-" ]]; then
+    CODESIGN_ARGS+=(--timestamp=none)
+  else
+    CODESIGN_ARGS+=(--options runtime --timestamp)
+  fi
+
+  while IFS= read -r code_path; do
+    codesign "${CODESIGN_ARGS[@]}" "$code_path" >/dev/null
+  done < <(find "$FRAMEWORKS_DIR" -type f \( -name "*.dylib" -o -name "*.framework" \) -print)
+
+  codesign "${CODESIGN_ARGS[@]}" --deep "$APP_DIR" >/dev/null
+fi
 
 echo "$APP_DIR"

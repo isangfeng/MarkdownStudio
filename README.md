@@ -35,6 +35,18 @@ The generated installer-style package is:
 .build/dist/MarkdownStudio.dmg
 ```
 
+The bundle script ad-hoc signs local builds by default so the app bundle is
+internally valid. For GitHub Releases that should open normally after download,
+configure Apple Developer ID signing and notarization secrets in the repository:
+
+- `APPLE_CODESIGN_IDENTITY`, for example `Developer ID Application: Example, Inc. (TEAMID)`
+- `APPLE_DEVELOPER_ID_CERTIFICATE_BASE64`
+- `APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_SPECIFIC_PASSWORD`
+- `APPLE_TEAM_ID`
+- `KEYCHAIN_PASSWORD`
+
 GitHub Releases are created automatically when a `v*` tag is pushed, for example:
 
 ```bash
@@ -42,4 +54,5 @@ git tag v0.1.0
 git push origin main --tags
 ```
 
-The app is not code signed or notarized yet, so macOS may show the standard warning for apps downloaded from the internet.
+Without Developer ID notarization, macOS may still show the standard warning for
+apps downloaded from the internet even though the bundle is ad-hoc signed.
