@@ -62,3 +62,7 @@ git push origin main --tags
 
 Without Developer ID notarization, macOS may still show the standard warning for
 apps downloaded from the internet even though the bundle is ad-hoc signed.
+
+## Acknowledgement
+
+Thank Claude Code and codex for their greatful help.
