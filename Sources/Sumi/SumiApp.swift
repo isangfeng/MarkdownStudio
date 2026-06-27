@@ -128,6 +128,7 @@ struct SumiApp: App {
     }
 }
 
+@MainActor
 private struct DocumentCommands: Commands {
     private var focusedModel: SingleDocumentModel? {
         AppController.shared.selectedModel
