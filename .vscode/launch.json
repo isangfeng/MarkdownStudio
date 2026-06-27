@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Sumi}",
+            "name": "Debug Sumi",
+            "target": "Sumi",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Sumi"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Sumi}",
+            "name": "Release Sumi",
+            "target": "Sumi",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Sumi"
+        }
+    ]
+}
